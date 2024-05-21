@@ -1,0 +1,48 @@
+<form id="myForm" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+      {% csrf_token %}
+      {% for s in  row %}
+      <tr>
+        <th scope="row">{{s.id}}</th>
+        <td>{{s.name}}</td>
+        <td>{{s.email}}</td>
+        <td>{{s.message}}</td>
+        <td>
+         <div class="d-inline">
+          <a href="{% url 'edit' s.id  %}" class="btn btn-primary d-inline">Edit</a>
+          <form action="{% url 'delete' s.id %}" class="d-inline">
+            <input class="btn btn-danger" type="submit" value="Delete">
+
+          </form>
+         </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('#myForm').submit(function(e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "my_form" %}',
+            data: $('#myForm').serialize(),
+            success: function(response){
+                alert(response.message);
+            },
+            error: function(response){
+                var errors = $.parseJSON(response.responseText);
+                alert("Error: " + errors.error);
+            }
+        });
+    });
+});
+</script>
